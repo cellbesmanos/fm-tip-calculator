@@ -1,0 +1,92 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Frondend Mentor | Tip Calculator</title>
+
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"> 
+
+    <link rel="stylesheet" href="styles.css">
+  </head>
+
+  <body>
+    <main>
+      <img class="splitter-logo" src="assets/images/logo.svg" alt="Splitter Logo">
+
+      <div class="calc">
+        <div class="calc__controls">
+          <div class="calc__input-group">
+            <label for="bill-input">Bill</label>
+  
+            <div class="calc__input">
+              <img src="assets/images/icon-dollar.svg" alt="Dollar Bill SVG">
+              <input id="bill-input" type="text" placeholder="0" maxlength="999999">
+            </div>
+          </div>
+          
+          <div class="calc__input-group">
+            <label>Select Tip %</label>
+
+            <div class="calc__option-list">
+              <button class="calc__option">5%</button>
+              <button class="calc__option">10%</button>
+              <button class="calc__option">15%</button>
+              <button class="calc__option">25%</button>
+              <button class="calc__option">50%</button>
+      
+              <input class="calc__custom-tip" type="text" placeholder="Custom" maxlength="2">
+            </div>
+          </div>
+
+          <div class="calc__input-group">
+            <label for="num-person-input">Number of People</label>
+            <span class="calc__input-msg">Can't be zero</span>
+  
+            <div class="calc__input">
+              <img src="assets/images/icon-dollar.svg" alt="Person SVG">
+              <input id="num-person-input" type="text" placeholder="0" maxlength="99">
+            </div>
+          </div>
+        </div>
+
+        <div class="calc__result-controls">
+          <div class="calc__result-container">
+            <div class="calc__result-group">
+              <div class="calc__result-text">
+                <p>Tip Amount</p>
+                <span>/ person</span>
+              </div>
+  
+              <p class="calc__result" id="individual-tip">$0.00</p>
+            </div>
+
+            <div class="calc__result-group">
+              <div class="calc__result-text">
+                <p>Total</p>
+                <span>/ person</span>
+              </div>
+  
+              <p class="calc__result" id="total-tip">$0.00</p>
+            </div>
+          </div>
+          
+          <button class="calc__result-reset">Reset</button>
+        </div>
+      </div>
+    </main>
+
+    <footer class="attribution">
+        Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
+        Coded by <a href="https://www.frontendmentor.io/profile/cellbesmanos">Christian Lhie Besmanos</a>.
+    </footer>
+
+    <script src="scripts.js"></script>
+  </body>
+</html>
