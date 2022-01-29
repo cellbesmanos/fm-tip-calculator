@@ -113,11 +113,11 @@ function calculateTip(fields, boxes, opt, cust) {
     tipPercent = parseFloat(opt.innerHTML.slice(0, -1)) / 100;
   }
 
-  const totalTip = tipPercent * totalBill;
-  const indivTip = totalTip / personNum;
+  const indivTip = (tipPercent * totalBill) / personNum;
+  const personBill = (totalBill / personNum) + indivTip;
 
   boxes[0].innerHTML = `$${indivTip}`;
-  boxes[1].innerHTML = `$${totalTip}`;
+  boxes[1].innerHTML = `$${personBill}`;
 }
 
 function checkCustomTip(cust) {
