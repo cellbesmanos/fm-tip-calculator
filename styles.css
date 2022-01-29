@@ -37,7 +37,7 @@ html { font-size: 62.5%; }
 body { 
   min-height: 100vh;
 
-  background-color: var(--cyan-dark);
+  background-color: var(--cyan-light);
 
   box-sizing: border-box; 
 }
