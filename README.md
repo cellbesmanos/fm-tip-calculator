@@ -28,7 +28,7 @@ Users should be able to:
 ### Links
 
 - [Solution URL](https://github.com/cellbesmanos/fm-tip-calculator)
-- [Live Site URL](https://your-live-site-url.com)
+- [Live Site URL](https://awesome-ride-8f7c45.netlify.app)
 
 ### Built with
 
