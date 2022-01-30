@@ -1,165 +1,190 @@
 
-// add event listeners to tip percent buttons
-// take their percentage
-// each click will take the bill, no. of person, and update the tip
-// disable reset if inputs were empty
+function TipCalculator() {
+  // all tip percentage buttons
+  const percentOpt = document.querySelectorAll(".calc__option-list .calc__option");
 
-function initializeCalcControls () {
-  const calcOpt = document.querySelectorAll(".calc__option-list .calc__option");
-  const billInput = document.getElementById("bill-input");
-  const personInput = document.getElementById("num-person-input");
-  const inputFields = [billInput, personInput];
   const customTip = document.querySelector(".calc__option-list .calc__custom-tip");
-  
-  const indivOutputBox = document.getElementById("individual-tip");
-  const totalOutputBox = document.getElementById("total-tip");
-  const outputBoxes = [indivOutputBox, totalOutputBox];
+  const resetBtn = document.querySelector(".calc__result-controls .calc__reset-btn");
 
-  const resetResult = document.querySelector(".calc__result-controls .calc__result-reset");
+  // all user input fields except the custom tip
+  // opted for objects since its better to read
+  const inputFields = {
+    "bill" : document.getElementById("bill-input"),
+    "person" : document.getElementById("num-person-input")
+  };
 
-  calcOpt.forEach(optClicked => {
-    optClicked.addEventListener("click", () => {
-      initializeTipStates(calcOpt, optClicked);
-      calculateTip(inputFields, outputBoxes, optClicked, customTip);
+  // elements for displaying the output
+  const outputBoxes = {
+    "tipPerPerson" : document.getElementById("indiv-tip"),
+    "totalPerPerson" : document.getElementById("indiv-bill")
+  }
+
+  this.initializeCalculator = function() {
+    initializePercentBtn();
+    setDefualtTipPercent();
+    initializeInputFields();
+    initializeResetBtn();
+    isInputFieldsEmpty();  // disables the reset button if the fields were empty onload
+    initializeCustomTipField();
+  }
+
+  const initializePercentBtn = function() {
+    percentOpt.forEach(optClicked => {
+      optClicked.addEventListener("click", () => {
+        initializePercentBtnStates(optClicked);
+        calculateTip(optClicked);
+      });
+    })
+  }
+
+  const initializePercentBtnStates = function(optClicked) {
+    percentOpt.forEach(opt => {
+      opt.classList.remove("calc__option--active");
     });
-  }); // end of calcOpt for each
+
+    optClicked.classList.add("calc__option--active");
+  }
+
+  // oly for the bill and person input, not the custom tip
+  const initializeInputFields = function() {
+    for(const field of Object.keys(inputFields)) {
+      inputFields[field].addEventListener("input", () => {
+        updateTip();
+        isInputFieldsEmpty();
+      })
+    }
+
+    initializeInputStates();
+  }
+
+  // oly for the bill and person input, not the custom tip
+  const initializeInputStates = function() {
+    for(const field of Object.keys(inputFields)) {
+      let fieldContainer = inputFields[field].parentElement;
+
+      // combining these two events emulates the focus pseudo class in CSS
+
+      inputFields[field].addEventListener("focus", () => {
+        fieldContainer.classList.add("calc__input--active");
+      });
+
+      inputFields[field].addEventListener("blur", () => {
+        fieldContainer.classList.remove("calc__input--active");
+      })
+    }
+  }
+
+  const initializeCustomTipField = function() {
+    customTip.addEventListener("input", () => {
+      updateTip();
+    })
+  }
+
+  const initializeResetBtn = function() {
+    // if the reset btn is clicked set the totals to 0
+    // and make the input fields empty
+
+    resetBtn.addEventListener("click", () => {
+      for(const box of Object.keys(outputBoxes)) {
+        outputBoxes[box].innerHTML = "$0.00";
+      }
+
+      for(const field of Object.keys(inputFields)) {
+        inputFields[field].value = "";
+      }
+
+      customTip.value = "";
+    }) // end of reset button event listener
+  }
+
+  const setDefualtTipPercent = function() {
+    const fifteenPercent = document.querySelector(".calc__option-list .calc__option:nth-child(3)");
+
+    fifteenPercent.click();
+  }
+
+  const calculateTip = function(optClicked) {
+    let tipPercent;
   
-  initializeDefualtTip();
-  initializeInputStates(inputFields);
-  initializeResetButton(outputBoxes, inputFields, customTip, resetResult);
-  checkInputFields(inputFields, resetResult);
+    const totalBill = parseFloat(inputFields["bill"].value);
+    const personNum = parseFloat(inputFields["person"].value);
 
-  inputFields.forEach(field => {
-    field.addEventListener("input", () => {
-      updateTip(inputFields, outputBoxes, customTip);
-      checkInputFields(inputFields, resetResult);
-    });
-  }) // end of input fields for each
+    // if any of the bill input is has fasly value or number of persons is 0
+    // then don't calculate the tip
+    if(!totalBill || personNum == 0) {
+      return
+    }
 
-  customTip.addEventListener("input", () => {
-    updateTip(inputFields, outputBoxes, customTip);
-  })
+    isNumPeopleEmpty();
 
-}
+    // if personNum jas empty
+    if(!personNum) {
+      return
+    }
+  
+    // if the custom tip field has input, use it to calculate the tip
+  
+    if(isCustomTipEmpty()) {
+      tipPercent = parseFloat(customTip.value) / 100;
+    } else {
+      tipPercent = parseFloat(optClicked.innerHTML.slice(0, -1)) / 100;
+    }
+  
+    const indivTip = (tipPercent * totalBill) / personNum;
+    const personBill = (totalBill / personNum) + indivTip;
 
-// INDIVIDUAL FUNCTIONS STARTS HERE
+    outputBoxes["tipPerPerson"].innerHTML = `$${indivTip}`;
+    outputBoxes["totalPerPerson"].innerHTML = `$${personBill}`;
+  } // end of calculate tip function
 
-function initializeInputStates(fields) {
-  fields.forEach(field => {
-    
-    const fieldContainer = field.parentElement;
-
-    field.addEventListener("focus", () => {
-      fieldContainer.classList.add("calc__input--active");
-    })
-
-    field.addEventListener("blur", () => {
-      fieldContainer.classList.remove("calc__input--active");
-    })
-  })
-}
-
-function initializeTipStates(optArray, optClicked) {
-  optArray.forEach(opt => {
-    opt.classList.remove("calc__option--active");
-  })
-
-  optClicked.classList.add("calc__option--active");
-}
-
-function initializeDefualtTip() {
-  const fifteenPercent = document.querySelector(".calc__option-list .calc__option:nth-child(3)");
-
-  fifteenPercent.click();
-}
-
-function initializeResetButton(boxes, fields, cust, resetBtn) {
-  resetBtn.addEventListener("click", () => {
-    boxes[0].innerHTML = "$0.00";
-    boxes[1].innerHTML = "$0.00";
-
-    fields.forEach(field => {
-      field.value = '';
-    })
-
-    cust.value = '';
-  })
-}
-
-function calculateTip(fields, boxes, opt, cust) {
-  let tipPercent;
-
-  const totalBill = parseFloat(fields[0].value);
-  const personNum = parseFloat(fields[1].value);
-
-  // if any of the input fields were empty don't calculate
-
-  if(!totalBill || personNum == 0) {
-    return
+  const updateTip = function() {
+    // this ensures, whenever the user completely left the custom field blank,
+    // that it will use the recently clicked tip option 
+    const activeOpt = document.querySelector(".calc__option-list .calc__option--active");
+      
+    calculateTip(activeOpt);
   }
 
-  checkNumOfPeople(fields[1]);
-
-  // if personNum is empty
-  if(!personNum) {
-    return
+  const isCustomTipEmpty = function() {
+    return customTip.value > 0;
   }
 
-  // if the custom tip field has input, prioritize it
+  const isInputFieldsEmpty = function() {
+    // if any of the input fields, excluding the custom tip field, is empty
+    // disable the reset button
 
-  if(checkCustomTip(cust)) {
-    tipPercent = parseFloat(cust.value) / 100;
-  } else {
-    tipPercent = parseFloat(opt.innerHTML.slice(0, -1)) / 100;
+    if(inputFields["bill"].value.length || inputFields["person"].value.length || inputFields["person"].value == 0) {
+      resetBtn.disabled = true;
+      resetBtn.classList.add("calc__reset-btn--disabled");
+      return
+    }
+    resetBtn.disabled = false;
+    resetBtn.classList.remove("calc__reset-btn--disabled");
   }
 
-  const indivTip = (tipPercent * totalBill) / personNum;
-  const personBill = (totalBill / personNum) + indivTip;
+  const isNumPeopleEmpty = function() {
+    const personFieldContainer = inputFields["person"].parentElement;
 
-  boxes[0].innerHTML = `$${indivTip}`;
-  boxes[1].innerHTML = `$${personBill}`;
-}
+    const personInputGroup = personFieldContainer.parentElement;
+    const errMsg = personInputGroup.querySelector(".calc__input-msg");
+  
+    // check if person input is empty or has 0 value
+  
+    if(!inputFields["person"].value.length > 0 || parseFloat(inputFields["person"].value) == 0) {
+      errMsg.classList.add("calc__input-msg--active");
+      personFieldContainer.classList.add("calc__input--error");
+  
+      return
+    } 
+    errMsg.classList.remove("calc__input-msg--active");
+    personFieldContainer.classList.remove("calc__input--error");
+  }
+} // end of TipCalculator constructor function
 
-function checkCustomTip(cust) {
-  return cust.value.length > 0;
-}
+const tipCalc = new TipCalculator();
 
-function updateTip(inputFields, outputBoxes, customTip) {
-  // this ensures, whenever the user completely left the custom field
-  // blank, that it will the recently clicked tip option 
-  const activeOpt = document.querySelector(".calc__option-list .calc__option--active");
-    
-  calculateTip(inputFields, outputBoxes, activeOpt, customTip);
-}
-
-function checkInputFields(fields, resetBtn) {
-  if((fields[0].value.length <= 0 || fields[1].value.length <= 0) || fields[1].value == 0) {
-    resetBtn.disabled = true;
-    resetBtn.classList.add("calc__result-reset--disabled");
-    return
-  } 
-  resetBtn.disabled = false;
-  resetBtn.classList.remove("calc__result-reset--disabled");
-}
-
-function checkNumOfPeople(field) {
-  const fieldContainer = field.parentElement;
-
-  const inputGroup = fieldContainer.parentElement;
-  const errMsg = inputGroup.querySelector(".calc__input-msg");
-
-  // check if person input is empty or has 0 value
-
-  if(!field.value.length > 0 || parseFloat(field.value) == 0) {
-    errMsg.classList.add("calc__input-msg--active");
-    fieldContainer.classList.add("calc__input--error");
-
-    return
-  } 
-  errMsg.classList.remove("calc__input-msg--active");
-  fieldContainer.classList.remove("calc__input--error");
-}
+// when the browser finished rendering all HTML elements and their styles
 
 document.addEventListener("DOMContentLoaded", () => {
-  initializeCalcControls();
-})
+  tipCalc.initializeCalculator();
+});
