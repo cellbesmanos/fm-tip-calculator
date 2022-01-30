@@ -85,14 +85,16 @@ button:not(:disabled):hover {
 
 .splitter-logo {
   display: inline-block;
-  margin: 3.2rem auto;
+  margin-top: 6.4rem;
+  margin-right: auto;
+  margin-bottom: 1.6rem;
+  margin-left: auto;
 }
 
 .calc {
   display: grid;
   gap: var(--padding);
-
-  margin: 5rem auto;
+  margin: 0.8rem auto;
   padding: var(--padding);
   min-height: 50rem;
   max-width: 120rem;
@@ -265,14 +267,14 @@ button:not(:disabled):hover {
   color: var(--cyan-primary);
 }
 
-.calc__result-controls .calc__result-reset {
+.calc__result-controls .calc__reset-btn {
   width: 100%;
   padding: var(--padding) calc(var(--padding) / 2);
 
   text-transform: uppercase;
 }
 
-.calc__result-controls .calc__result-reset--disabled {
+.calc__result-controls .calc__reset-btn--disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
